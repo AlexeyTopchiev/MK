@@ -1,6 +1,6 @@
 const player1 = {
-  name: "SUB-ZERO",
-  hp: 100,
+  name: "SCORPION",
+  hp: 80,
   img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
   weapon: ["katana", "kunai"],
   attack: function() {
@@ -9,7 +9,7 @@ const player1 = {
 }
 
 const player2 = {
-  name: "SCORPION",
+  name: "SUB-ZERO",
   hp: 100,
   img: "http://reactmarathon-api.herokuapp.com/assets/subzero.gif",
   weapon: ["axe", "chain"],
@@ -43,7 +43,7 @@ function createPlayer(className, playerObj) {
   const $img = document.createElement("img")
   $character.appendChild($img)
 
-  $life.style.width = playerObj + "%"
+  $life.style.width = playerObj.hp + "%"
   $name.innerText = playerObj.name
   $img.src = playerObj.img
 
