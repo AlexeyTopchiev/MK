@@ -113,6 +113,7 @@ $randomButton.addEventListener("click", () => {
 
   if (player1.hp === 0 || player2.hp === 0) {
     $randomButton.disabled = true
+    $randomButton.style.display = "none" //optional from me
     $reloadButton = $arena.appendChild(createReloadButton())
 
     $reloadButton.addEventListener("click", function() {
