@@ -1,5 +1,26 @@
-const $arena = document.querySelector("div.arenas")
+const $arena = document.querySelector(".arenas")
 const $randomButton = document.querySelector(".button")
+
+function elHP() {
+  const $playerLife = document.querySelector(`.player${this.player} .life`)
+  return $playerLife
+}
+
+function renderHP() {
+  this.elHP().style.width = this.hp + "%"
+}
+
+function changeHP(num) {
+  this.elHP()
+
+  if (this.hp <= 0) {
+    this.hp = 0
+  } else {
+    this.hp -= num
+  }
+
+  this.renderHP()
+}
 
 const player1 = {
   player: 1,
@@ -9,7 +30,10 @@ const player1 = {
   weapon: ["katana", "kunai"],
   attack: function() {
     console.log(this.name + " Fight...")
-  }
+  },
+  changeHP: changeHP,
+  elHP: elHP,
+  renderHP: renderHP
 }
 
 const player2 = {
@@ -20,7 +44,10 @@ const player2 = {
   weapon: ["axe", "chain"],
   attack: function() {
     console.log(this.name + " Fight...")
-  }
+  },
+  changeHP: changeHP,
+  elHP: elHP,
+  renderHP: renderHP
 }
 
 function createElement(tag, className) {
@@ -57,56 +84,63 @@ function createPlayer(playerObj) {
   return $player
 }
 
-function hitPlayers() {
-  changeHP(player1)
-  changeHP(player2)
-
-  console.log("player1 hp:", player1.hp)
-  console.log("player2 hp:", player2.hp)
-
-  if (isDraw()) {
-    console.log("draw")
-    $arena.appendChild(endBattle("DRAW"))
-  } else {
-    let winner = hasWinner()
-    console.log("winner is " + winner)
-    if (winner) $arena.appendChild(endBattle(winner + " WINS"))
-  }
+function getRandomDamage(num) {
+  return Math.ceil(Math.random() * num)
 }
 
-function randomDamage() {
-  return Math.ceil(Math.random() * 20)
-}
+// function changeHP(player) {
+//   const $playerLife = document.querySelector(`.player${player.player} .life`)
+//   player.hp -= getRandomDamage(20)
 
-function changeHP(player) {
-  const playerLife = document.querySelector(`.player${player.player} .life`)
-  player.hp -= randomDamage()
-  playerLife.style.width = `${player.hp}%`
+//   if (player.hp <= 0) {
+//     player.hp = 0
+//   }
 
-  if (player.hp <= 0) {
-    player.hp = 0
-    playerLife.style.width = `0%`
-  }
-}
+//   $playerLife.style.width = player.hp + "%"
+// }
 
-function hasWinner() {
-  if (player1.hp == 0) return player2.name
-  if (player2.hp == 0) return player1.name
-}
-
-function isDraw() {
-  return !player1.hp && !player2.hp
-}
-
-function endBattle(text) {
+function playerWins(name) {
   const $title = createElement("div", "loseTitle")
-  $title.innerText = text
-  $randomButton.disabled = true
+  if (name) {
+    $title.innerText = name + " wins"
+  } else {
+    $title.innerText = "draw"
+  }
+
   return $title
 }
 
+function createReloadButton() {
+  const $reloadWrap = createElement("div", "reloadWrap")
+  const $button = createElement("button", "button")
+  $button.innerText = "Restart"
+  $reloadWrap.appendChild($button)
+
+  return $reloadWrap
+}
+
 $randomButton.addEventListener("click", () => {
-  hitPlayers()
+  // changeHP(player1)
+  // changeHP(player2)
+  player1.changeHP(getRandomDamage(20))
+  player2.changeHP(getRandomDamage(20))
+
+  if (player1.hp === 0 || player2.hp === 0) {
+    $randomButton.disabled = true
+    $reloadButton = $arena.appendChild(createReloadButton())
+
+    $reloadButton.addEventListener("click", function() {
+      window.location.reload()
+    })
+  }
+
+  if (player1.hp === 0 && player1.hp < player2.hp) {
+    $arena.appendChild(playerWins(player2.name))
+  } else if (player2.hp === 0 && player2.hp < player1.hp) {
+    $arena.appendChild(playerWins(player1.name))
+  } else if (player1.hp === 0 && player2.hp === 0) {
+    $arena.appendChild(playerWins())
+  }
 })
 
 $arena.appendChild(createPlayer(player1))
