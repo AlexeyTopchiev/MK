@@ -42,13 +42,13 @@ function elHP() {
   return $playerLife
 }
 
-function renderHP(lifeElement) {
+function renderHP() {
   this.elHP().style.width = this.hp + "%"
-  // lifeElement.style.width = this.hp + "%"
 }
 
 function changeHP(num) {
   this.hp -= num
+
   if (this.hp < 0) {
     this.hp = 0
   }
@@ -116,26 +116,6 @@ function createReloadButton() {
   $arenas.appendChild($reloadButtonDiv)
 }
 
-// $randomButton.addEventListener("click", () => {
-//   player1.changeHP(getRandom(20))
-//   player1.renderHP(player1.elHP())
-//   player2.changeHP(getRandom(20))
-//   player2.renderHP(player2.elHP())
-
-//   if (player1.hp === 0 || player2.hp === 0) {
-//     $randomButton.disabled = true
-//     createReloadButton()
-//   }
-
-//   if (player1.hp === 0 && player1.hp < player2.hp) {
-//     $arenas.appendChild(playerWins(player2.name))
-//   } else if (player2.hp === 0 && player2.hp < player1.hp) {
-//     $arenas.appendChild(playerWins(player1.name))
-//   } else if (player1.hp === 0 && player2.hp === 0) {
-//     $arenas.appendChild(playerWins())
-//   }
-// })
-
 $arenas.appendChild(createPlayer(player1))
 $arenas.appendChild(createPlayer(player2))
 
@@ -148,6 +128,11 @@ function enemyAttack() {
     hit,
     defence
   }
+}
+
+function handleHit(player, damageValue) {
+  player.changeHP(damageValue)
+  player.renderHP(player.elHP())
 }
 
 $formFight.addEventListener("submit", function(e) {
@@ -167,20 +152,12 @@ $formFight.addEventListener("submit", function(e) {
     item.checked = false
   }
 
-  console.log("attack:", attack)
-  console.log("enemy:", enemy)
-
   if (attack.hit !== enemy.defence) {
-    player2.changeHP(attack.value)
-    player2.renderHP(player2.elHP())
+    handleHit(player2, attack.value)
   }
   if (enemy.hit !== attack.defence) {
-    player1.changeHP(enemy.value)
-    player1.renderHP(player1.elHP())
+    handleHit(player1, enemy.value)
   }
-
-  console.log("player1 hp", player1.hp)
-  console.log("player2 hp", player2.hp)
 
   if (player1.hp === 0 || player2.hp === 0) {
     $fightButton.disabled = true
