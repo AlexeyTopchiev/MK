@@ -1,23 +1,13 @@
-const $arena = document.querySelector(".arenas")
-const $randomButton = document.querySelector(".button")
+const $arenas = document.querySelector(".arenas")
+const $formFight = document.querySelector(".control")
+const $fightButton = document.querySelector(".button")
 
-function elHP() {
-  const $playerLife = document.querySelector(`.player${this.player} .life`)
-  return $playerLife
+const HIT = {
+  head: 30,
+  body: 25,
+  foot: 20
 }
-
-function renderHP(lifeElement) {
-  // this.elHP().style.width = this.hp + "%"
-  lifeElement.style.width = this.hp + "%"
-}
-
-function changeHP(num) {
-  if (this.hp <= 0) {
-    this.hp = 0
-  } else {
-    this.hp -= num
-  }
-}
+const ATTACK = ["head", "body", "foot"]
 
 const player1 = {
   player: 1,
@@ -28,9 +18,9 @@ const player1 = {
   attack: function() {
     console.log(this.name + " Fight...")
   },
-  changeHP: changeHP,
-  elHP: elHP,
-  renderHP: renderHP
+  changeHP,
+  elHP,
+  renderHP
 }
 
 const player2 = {
@@ -42,9 +32,26 @@ const player2 = {
   attack: function() {
     console.log(this.name + " Fight...")
   },
-  changeHP: changeHP,
-  elHP: elHP,
-  renderHP: renderHP
+  changeHP,
+  elHP,
+  renderHP
+}
+
+function elHP() {
+  const $playerLife = document.querySelector(`.player${this.player} .life`)
+  return $playerLife
+}
+
+function renderHP() {
+  this.elHP().style.width = this.hp + "%"
+}
+
+function changeHP(num) {
+  this.hp -= num
+
+  if (this.hp < 0) {
+    this.hp = 0
+  }
 }
 
 function createElement(tag, className) {
@@ -81,7 +88,7 @@ function createPlayer(playerObj) {
   return $player
 }
 
-function getRandomDamage(num) {
+function getRandom(num) {
   return Math.ceil(Math.random() * num)
 }
 
@@ -97,38 +104,71 @@ function playerWins(name) {
 }
 
 function createReloadButton() {
-  const $reloadWrap = createElement("div", "reloadWrap")
-  const $button = createElement("button", "button")
-  $button.innerText = "Restart"
-  $reloadWrap.appendChild($button)
+  const $reloadButtonDiv = createElement("div", "reloadWrap")
+  const $reloadButton = createElement("button", "button")
+  $reloadButton.innerText = "Restart"
 
-  return $reloadWrap
+  $reloadButton.addEventListener("click", function() {
+    window.location.reload()
+  })
+
+  $reloadButtonDiv.appendChild($reloadButton)
+  $arenas.appendChild($reloadButtonDiv)
 }
 
-$randomButton.addEventListener("click", () => {
-  player1.changeHP(getRandomDamage(20))
-  player1.renderHP(player1.elHP())
-  player2.changeHP(getRandomDamage(20))
-  player2.renderHP(player2.elHP())
+$arenas.appendChild(createPlayer(player1))
+$arenas.appendChild(createPlayer(player2))
+
+function enemyAttack() {
+  const hit = ATTACK[getRandom(3) - 1]
+  const defence = ATTACK[getRandom(3) - 1]
+
+  return {
+    value: getRandom(HIT[hit]),
+    hit,
+    defence
+  }
+}
+
+function handleHit(player, damageValue) {
+  player.changeHP(damageValue)
+  player.renderHP(player.elHP())
+}
+
+$formFight.addEventListener("submit", function(e) {
+  e.preventDefault()
+  const enemy = enemyAttack()
+  const attack = {}
+
+  for (let item of $formFight) {
+    if (item.checked && item.name === "hit") {
+      attack.value = getRandom(HIT[item.value])
+      attack.hit = item.value
+    }
+    if (item.checked && item.name === "defence") {
+      attack.defence = item.value
+    }
+
+    item.checked = false
+  }
+
+  if (attack.hit !== enemy.defence) {
+    handleHit(player2, attack.value)
+  }
+  if (enemy.hit !== attack.defence) {
+    handleHit(player1, enemy.value)
+  }
 
   if (player1.hp === 0 || player2.hp === 0) {
-    $randomButton.disabled = true
-    $randomButton.style.display = "none" //optional from me
-    $reloadButton = $arena.appendChild(createReloadButton())
-
-    $reloadButton.addEventListener("click", function() {
-      window.location.reload()
-    })
+    $fightButton.disabled = true
+    createReloadButton()
   }
 
   if (player1.hp === 0 && player1.hp < player2.hp) {
-    $arena.appendChild(playerWins(player2.name))
+    $arenas.appendChild(playerWins(player2.name))
   } else if (player2.hp === 0 && player2.hp < player1.hp) {
-    $arena.appendChild(playerWins(player1.name))
+    $arenas.appendChild(playerWins(player1.name))
   } else if (player1.hp === 0 && player2.hp === 0) {
-    $arena.appendChild(playerWins())
+    $arenas.appendChild(playerWins())
   }
 })
-
-$arena.appendChild(createPlayer(player1))
-$arena.appendChild(createPlayer(player2))
