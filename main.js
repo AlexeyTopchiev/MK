@@ -130,14 +130,7 @@ function enemyAttack() {
   }
 }
 
-function handleHit(player, damageValue) {
-  player.changeHP(damageValue)
-  player.renderHP(player.elHP())
-}
-
-$formFight.addEventListener("submit", function(e) {
-  e.preventDefault()
-  const enemy = enemyAttack()
+function playerAttack() {
   const attack = {}
 
   for (let item of $formFight) {
@@ -151,16 +144,18 @@ $formFight.addEventListener("submit", function(e) {
 
     item.checked = false
   }
+  return attack
+}
 
-  if (attack.hit !== enemy.defence) {
-    handleHit(player2, attack.value)
-  }
-  if (enemy.hit !== attack.defence) {
-    handleHit(player1, enemy.value)
-  }
+function handleHit(player, damageValue) {
+  player.changeHP(damageValue)
+  player.renderHP(player.elHP())
+}
 
+function showResult() {
   if (player1.hp === 0 || player2.hp === 0) {
     $fightButton.disabled = true
+    $fightButton.style.display = "none"
     createReloadButton()
   }
 
@@ -171,4 +166,19 @@ $formFight.addEventListener("submit", function(e) {
   } else if (player1.hp === 0 && player2.hp === 0) {
     $arenas.appendChild(playerWins())
   }
+}
+
+$formFight.addEventListener("submit", function(e) {
+  e.preventDefault()
+  const enemy = enemyAttack()
+  const player = playerAttack()
+
+  if (player.hit !== enemy.defence) {
+    handleHit(player2, player.value)
+  }
+  if (enemy.hit !== player.defence) {
+    handleHit(player1, enemy.value)
+  }
+
+  showResult()
 })
