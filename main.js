@@ -212,9 +212,9 @@ function showResult() {
   }
 }
 
-// function getNormalizeTime(num) {
-//   return num.toString().length > 1 ? num : `0${num}`
-// }
+function getNormalizeTime(num) {
+  return num.toString().length > 1 ? num : `0${num}`
+}
 
 function generateLogs(type, player1, player2, damage) {
   let text
@@ -223,21 +223,27 @@ function generateLogs(type, player1, player2, damage) {
   const date = new Date()
   switch (type) {
     case "hit":
-      time = `${date.getHours()}:${date.getMinutes()}`
+      time = `${getNormalizeTime(date.getHours())}:${getNormalizeTime(
+        date.getMinutes()
+      )}`
       text = logs[type][getRandom(logs[type].length - 1)]
         .replace("[playerKick]", player1.name)
         .replace("[playerDefence]", player2.name)
       el = `<p>${time} - ${text} -${damage} [${player2.hp}/100]</p>`
       break
     case "defence":
-      time = `${date.getHours()}:${date.getMinutes()}`
+      time = `${getNormalizeTime(date.getHours())}:${getNormalizeTime(
+        date.getMinutes()
+      )}`
       text = logs[type][getRandom(logs[type].length - 1)]
         .replace("[playerKick]", player1.name)
         .replace("[playerDefence]", player2.name)
       el = `<p>${time} - ${text}</p>`
       break
     case "start":
-      time = `${date.getHours()}:${date.getMinutes()}`
+      time = `${getNormalizeTime(date.getHours())}:${getNormalizeTime(
+        date.getMinutes()
+      )}`
       text = logs[type]
         .replace("[time]", time)
         .replace("[player1]", player1.name)
