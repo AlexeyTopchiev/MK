@@ -57,7 +57,7 @@ const player1 = {
   img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
   weapon: ["katana", "kunai"],
   attack: function() {
-    console.log(this.name + " Fight...")
+    console.log(`${this.name} Fight`)
   },
   changeHP,
   elHP,
@@ -71,7 +71,7 @@ const player2 = {
   img: "http://reactmarathon-api.herokuapp.com/assets/subzero.gif",
   weapon: ["axe", "chain"],
   attack: function() {
-    console.log(this.name + " Fight...")
+    console.log(`${this.name} Fight`)
   },
   changeHP,
   elHP,
@@ -84,7 +84,7 @@ function elHP() {
 }
 
 function renderHP() {
-  this.elHP().style.width = this.hp + "%"
+  this.elHP().style.width = `${this.hp}%`
 }
 
 function changeHP(num) {
@@ -122,7 +122,7 @@ function createPlayer(playerObj) {
   const $img = createElement("img")
   $character.appendChild($img)
 
-  $life.style.width = playerObj.hp + "%"
+  $life.style.width = `${playerObj.hp}%`
   $name.innerText = playerObj.name
   $img.src = playerObj.img
 
@@ -136,7 +136,7 @@ function getRandom(num) {
 function playerWins(name) {
   const $title = createElement("div", "loseTitle")
   if (name) {
-    $title.innerText = name + " wins"
+    $title.innerText = `${name} wins`
   } else {
     $title.innerText = "draw"
   }
