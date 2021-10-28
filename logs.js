@@ -42,7 +42,12 @@ const logs = {
   draw: "Ничья - это тоже победа!"
 }
 
-export const generateLogs = (type, player1, player2, damage) => {
+export const generateLogs = (
+  type,
+  { name } = {},
+  { name: playerName2, hp } = {},
+  damage
+) => {
   let text
   let el
   let time
@@ -53,17 +58,17 @@ export const generateLogs = (type, player1, player2, damage) => {
         date.getMinutes()
       )}`
       text = logs[type][getRandom(logs[type].length - 1)]
-        .replace("[playerKick]", player1.name)
-        .replace("[playerDefence]", player2.name)
-      el = `<p>${time} - ${text} -${damage} [${player2.hp}/100]</p>`
+        .replace("[playerKick]", name)
+        .replace("[playerDefence]", playerName2)
+      el = `<p>${time} - ${text} -${damage} [${hp}/100]</p>`
       break
     case "defence":
       time = `${getNormalizeTime(date.getHours())}:${getNormalizeTime(
         date.getMinutes()
       )}`
       text = logs[type][getRandom(logs[type].length - 1)]
-        .replace("[playerKick]", player1.name)
-        .replace("[playerDefence]", player2.name)
+        .replace("[playerKick]", name)
+        .replace("[playerDefence]", playerName2)
       el = `<p>${time} - ${text}</p>`
       break
     case "start":
@@ -72,14 +77,14 @@ export const generateLogs = (type, player1, player2, damage) => {
       )}`
       text = logs[type]
         .replace("[time]", time)
-        .replace("[player1]", player1.name)
-        .replace("[player2]", player2.name)
+        .replace("[player1]", name)
+        .replace("[player2]", playerName2)
       el = `<p>${text}</p>`
       break
     case "end":
       text = logs[type][getRandom(logs[type].length - 1)]
-        .replace("[playerWins]", player1.name)
-        .replace("[playerLose]", player2.name)
+        .replace("[playerWins]", name)
+        .replace("[playerLose]", playerName2)
       el = `<p>${text}</p>`
       break
     case "draw":
