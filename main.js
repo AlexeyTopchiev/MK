@@ -4,9 +4,7 @@ import { $arenas, $formFight } from "./nodes.js"
 import { enemyAttack, playerAttack, showResult } from "./fight.js"
 import { generateLogs } from "./logs.js"
 
-const createPlayer = playerObj => {
-  const { player, hp, name, img } = playerObj
-
+const createPlayer = ({ player, hp, name, img }) => {
   const $player = createElement("div", `player${player}`)
   const $progressBar = createElement("div", "progressbar")
   const $character = createElement("div", "character")
@@ -42,18 +40,21 @@ const handleHit = (player, damageValue) => {
 
 $formFight.addEventListener("submit", function(e) {
   e.preventDefault()
-  const enemy = enemyAttack()
   const player = playerAttack()
+  const enemy = enemyAttack()
 
-  if (player.hit !== enemy.defence) {
-    handleHit(player2, player.value)
-    generateLogs("hit", player1, player2, player.value)
+  const { hit, defence, value } = player
+  const { hit: enemyHit, defence: enemyDefence, value: enemyValue } = enemy
+
+  if (hit !== enemyDefence) {
+    handleHit(player2, value)
+    generateLogs("hit", player1, player2, value)
   } else {
     generateLogs("defence", player1, player2)
   }
-  if (enemy.hit !== player.defence) {
-    handleHit(player1, enemy.value)
-    generateLogs("hit", player2, player1, enemy.value)
+  if (enemyHit !== defence) {
+    handleHit(player1, enemyValue)
+    generateLogs("hit", player2, player1, enemyValue)
   } else {
     generateLogs("defence", player2, player1)
   }
