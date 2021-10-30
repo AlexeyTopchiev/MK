@@ -1,51 +1,80 @@
-import { player1, player2 } from "./player.js"
-import { createElement } from "./utils.js"
+import { getRandom } from "./utils.js"
 import { $arenas, $formFight } from "./nodes.js"
-import { enemyAttack, playerAttack, showResult } from "./fight.js"
+import { playerAttack, showResult } from "./fight.js"
 import { generateLogs } from "./logs.js"
+import { Player } from "./player.js"
+
+export let player1
+export let player2
 
 class Game {
-  start = () => {
-    $arenas.appendChild(this.createPlayer(player1))
-    $arenas.appendChild(this.createPlayer(player2))
+  getPlayers = async () => {
+    const body = fetch(
+      "https://reactmarathon-api.herokuapp.com/api/mk/players"
+    ).then(res => res.json())
+
+    return body
+  }
+
+  getRandomEnemy = async () => {
+    const body = fetch(
+      "https://reactmarathon-api.herokuapp.com/api/mk/player/choose"
+    ).then(res => res.json())
+
+    return body
+  }
+
+  handleHit = async () => {
+    const { hit, defence } = playerAttack()
+    const body = await fetch(
+      "http://reactmarathon-api.herokuapp.com/api/mk/player/fight",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          hit,
+          defence
+        })
+      }
+    ).then(res => res.json())
+
+    return body
+  }
+
+  start = async () => {
+    const players = await this.getPlayers()
+    console.log("###players:", players)
+    // const p1 = players[getRandom(players.length - 1)]
+    const p1 = JSON.parse(localStorage.getItem("player1"))
+    const p2 = await this.getRandomEnemy()
+
+    player1 = new Player({
+      ...p1,
+      player: 1,
+      rootSelector: "arenas"
+    })
+
+    player2 = new Player({
+      ...p2,
+      player: 2,
+      rootSelector: "arenas"
+    })
+
+    $arenas.appendChild(player1.createPlayer())
+    $arenas.appendChild(player2.createPlayer())
 
     generateLogs("start", player1, player2)
 
     this.handleFightSubmit()
   }
 
-  createPlayer = ({ player, hp, name, img }) => {
-    const $player = createElement("div", `player${player}`)
-    const $progressBar = createElement("div", "progressbar")
-    const $character = createElement("div", "character")
-
-    $player.appendChild($progressBar)
-    $player.appendChild($character)
-
-    const $life = createElement("div", "life")
-    const $name = createElement("div", "name")
-
-    $progressBar.appendChild($life)
-    $progressBar.appendChild($name)
-
-    const $img = createElement("img")
-    $character.appendChild($img)
-
-    $life.style.width = `${hp}%`
-    $name.innerText = name
-    $img.src = img
-
-    return $player
-  }
-
   handleFightSubmit = () => {
-    $formFight.addEventListener("submit", function(e) {
+    $formFight.addEventListener("submit", async e => {
       e.preventDefault()
-      const player = playerAttack()
-      const enemy = enemyAttack()
 
-      const { hit, defence, value } = player
-      const { hit: enemyHit, defence: enemyDefence, value: enemyValue } = enemy
+      const {
+        player1: { hit, defence, value },
+        player2: { hit: enemyHit, defence: enemyDefence, value: enemyValue }
+      } = await this.handleHit()
 
       if (hit !== enemyDefence) {
         player2.changeHP(value)
