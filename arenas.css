@@ -107,9 +107,22 @@ body {
   border: 4px solid #f5d100;
   position: absolute;
   top: 59px;
-  height: 28px;
+  height: 38px;
   background-color: #cd0e03;
   display: flex;
+}
+
+.hp {
+  position: absolute;
+  right: 10px;
+  top: -1px;
+  font-size: 28px;
+  font-weight: bold;
+  color: yellow;
+}
+
+.player2 .hp {
+  left: 10px;
 }
 
 .player1 .progressbar {
@@ -157,7 +170,7 @@ body {
   line-height: 20px;
   letter-spacing: 2px;
   color: #efefef;
-  top: 0;
+  top: 5px;
   text-transform: uppercase;
 }
 
@@ -294,7 +307,7 @@ body {
 
 .reloadWrap {
   position: absolute;
-  top: 54px;
+  top: 59px;
   z-index: 1000;
   left: 50%;
   transform: translate(-50%, 0%);

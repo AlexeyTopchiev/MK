@@ -18,9 +18,11 @@ export class Player {
 
     const $life = createElement("div", "life")
     const $name = createElement("div", "name")
+    const $hp = createElement("div", "hp")
 
     $progressBar.appendChild($life)
     $progressBar.appendChild($name)
+    $progressBar.appendChild($hp)
 
     const $img = createElement("img")
     $character.appendChild($img)
@@ -28,6 +30,7 @@ export class Player {
     $life.style.width = `${this.hp}%`
     $name.innerText = this.name
     $img.src = this.img
+    $hp.innerText = this.hp
 
     return $player
   }
@@ -42,10 +45,16 @@ export class Player {
 
   renderHP = () => {
     this.elHP().style.width = `${this.hp}%`
+    this.counterHp().innerText = this.hp
   }
 
   elHP = () => {
     const $playerLife = document.querySelector(`.player${this.player} .life`)
     return $playerLife
+  }
+
+  counterHp = () => {
+    const $hpValue = document.querySelector(`.player${this.player} .hp`)
+    return $hpValue
   }
 }
