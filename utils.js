@@ -16,7 +16,7 @@ export const createReloadButton = () => {
   $reloadButton.innerText = "Restart"
 
   $reloadButton.addEventListener("click", () => {
-    window.location.reload()
+    window.location.pathname = "index.html"
   })
 
   $reloadButtonDiv.appendChild($reloadButton)
