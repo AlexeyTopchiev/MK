@@ -34,6 +34,8 @@ async function init() {
     "https://reactmarathon-api.herokuapp.com/api/mk/players"
   ).then(res => res.json())
 
+  let isCanSelect = true
+
   let imgSrc = null
   createEmptyPlayerBlock()
 
@@ -42,7 +44,7 @@ async function init() {
     const img = createElement("img")
 
     const handleMouseMove = () => {
-      if (imgSrc === null) {
+      if (imgSrc === null && isCanSelect) {
         imgSrc = item.img
         const $img = createElement("img")
         $img.src = imgSrc
@@ -51,7 +53,7 @@ async function init() {
     }
 
     const handleMouseOut = () => {
-      if (imgSrc) {
+      if (imgSrc && isCanSelect) {
         imgSrc = null
         $player.innerHTML = ""
       }
@@ -67,8 +69,10 @@ async function init() {
       // то мы должны ее распарсить обратным методом JSON.parse(localStorage.getItem('player1'));
       // но это уже будет в нашем классе Game когда мы инициализируем игроков.
       //   el.removeEventListener('mousemove')
-      el.removeEventListener("mousemove", handleMouseMove)
-      el.removeEventListener("mouseout", handleMouseOut)
+      $parent.style.pointerEvents = "none"
+      isCanSelect = false
+      //   el.removeEventListener("mousemove", handleMouseMove)
+      //   el.removeEventListener("mouseout", handleMouseOut)
       localStorage.setItem("player1", JSON.stringify(item))
 
       el.classList.add("active")
