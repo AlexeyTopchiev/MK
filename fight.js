@@ -46,6 +46,8 @@ export const showResult = () => {
     $fightButton.disabled = true
     $fightButton.style.display = "none"
     createReloadButton()
+    const audio = document.getElementById("audio-main")
+    audio.pause()
   }
 
   if (player1.hp === 0 && player1.hp < player2.hp) {
