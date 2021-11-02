@@ -1,4 +1,4 @@
-import { getRandom } from "./utils.js"
+import { playSound } from "./utils.js"
 import { $arenas, $formFight } from "./nodes.js"
 import { playerAttack, showResult } from "./fight.js"
 import { generateLogs } from "./logs.js"
@@ -27,7 +27,7 @@ class Game {
   handleHit = async () => {
     const { hit, defence } = playerAttack()
     const body = await fetch(
-      "http://reactmarathon-api.herokuapp.com/api/mk/player/fight",
+      "https://reactmarathon-api.herokuapp.com/api/mk/player/fight",
       {
         method: "POST",
         body: JSON.stringify({
@@ -76,6 +76,12 @@ class Game {
         player1: { hit, defence, value },
         player2: { hit: enemyHit, defence: enemyDefence, value: enemyValue }
       } = await this.handleHit()
+
+      if (hit !== enemyDefence || enemyHit !== defence) {
+        playSound("hit")
+      } else {
+        playSound("block")
+      }
 
       if (hit !== enemyDefence) {
         player2.changeHP(value)

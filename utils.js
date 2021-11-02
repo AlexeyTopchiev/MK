@@ -1,4 +1,4 @@
-import { $arenas } from "./nodes.js"
+import { $arenas, $hit, $block } from "./nodes.js"
 
 export const createElement = (tag, className) => {
   const $tag = document.createElement(tag)
@@ -27,3 +27,7 @@ export const getRandom = num => Math.ceil(Math.random() * num)
 
 export const getNormalizeTime = num =>
   num.toString().length > 1 ? num : `0${num}`
+
+export const playSound = type => {
+  type === "hit" ? $hit.play() : $block.play()
+}
